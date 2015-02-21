@@ -1,20 +1,25 @@
-
-
 <?php
-function untag($string){
-    $string = str_replace('<', '&lt;', $string);
-    $string = str_replace('>', '&gt;', $string);
-    return $string;
+$file =  "./packets/SPPS_20150104.xml";
+$handle = fopen($file, "r");
+
+//check declaration: <?xml version="1.0" encoding="UTF-8"? >
+$c = trim(fgets($handle));
+echo "<br> c:".$c;
+$c .= trim(fgets($handle));
+echo "<br> c:".$c;
+$c .= trim(fgets($handle));
+echo "<br> c:".$c;
+fclose($handle);
+/*
+if ( strpos($c, "<?") >= 0 ) {
+    while( !strpos($c, "?>") ) {
+        $c .= trim(fgets($file));
+    }
+    $x = untag($c);
+    $c = substr($c, strpos($c, "?>")+2);
+} else {
+    $x = "Keine XML Deklaration gefunden.";
 }
-$filename =  "SPPS_20150104.xml";
-$xml = fopen($filename, "r");
-echo "<br>line01: ", untag(fgets($xml));//<?xml version="1.0" encoding="UTF-8"? >
-
-
-echo "<br>line02: ",untag(fgets($xml));
-echo "<br>line03: ",untag(fgets($xml));
-echo "<br>line04: ",untag(fgets($xml));
-echo "<br>line05: ",untag(fgets($xml));
-echo "<br>line06: ",untag(fgets($xml));
-echo "<br>line07: ",untag(fgets($xml));
-fclose($xml);
+echo("<br>".$x);
+echo("<br>".strlen($c));
+*/
