@@ -1,0 +1,14 @@
+{
+  "key with predefined values": "all possible values for this key, part_number: 1 per KB/length",
+  "package_mode": "delete",
+  "package_mode_": "create"
+  "package.packagetext_lang": "dr",
+  "package.packagetext_lang": "en",
+  "package.packagetext_lang": "fr",
+  "package.labour.unit_id": "A",
+  "package.labour_linenumber": "01",
+  "packege.part_format": "entry",
+  "package.part_number": "A  9424212112",
+  "package.part_number": "N910105018026",
+  "package.validity.componentshortserial_type": "A"
+}

@@ -1,15 +1,9 @@
 <?php
 $fXml = "./packets/test02.xml";  //SPPS_20150104.xml"; //
 $hXml = fopen($fXml, "r");
-class paket {
-
-}
 
 $c = "";
 $lineCount = 0;
-$k = json_decode(file_get_contents('key_range.json'), true);
-$v = json_decode(file_get_contents('value_range.json'), true);
-
 while ( $c .= trim(fgets($hXml)) ) {
     $lineCount++;
     if ( strpos($c, "<?") !== false ) {
@@ -60,13 +54,7 @@ while ( $c .= trim(fgets($hXml)) ) {
             fclose($hXml);
             exit;
         }
-
-        $p = [];
         recursePackage($package);
-        echo "<br>";
-        print("<pre>".print_r($p, true)."</pre>");
-        echo "<br>";
-
     }
     if ( strpos($c, "</packages>") !== false) {
         // the last word was spoken
@@ -91,25 +79,13 @@ function untag($string) {
 }
 
 function recursePackage($xml, $parent="package", $top_level=true) {
-    global $p;
-    if ($top_level) {
-        //cheating:
-        $s = "$parent=\n";
-        array_push($p, $s);
-        echo "<br>", $s;
-    }
+    if ($top_level) echo "<br>", $parent, " ="; //cheating!!
     foreach ($xml->attributes() as $a => $b) {
-        $be = utf8_decode($b);
-        $s = $parent.'_'.$a.'='.$be."\n";
-        array_push($p, $s);
-        echo "<br>", $s;
+        echo "<br>", $parent . '[' . $a . ']', " = ", utf8_decode($b);
     }
     foreach ($xml as $key => $value) {
-        $v = utf8_decode((string)$value);
-        $k = (string)$key;
-        $s = $parent.'.'.$k.'='.$v."\n";
-        array_push($p, $s);
-        echo "<br>", $s;
+        $val = (string)$value;
+        print("<br>" . $parent . "." . (string)$key . " = " . utf8_decode($val));
         recursePackage($value, $parent . "." . $key, false);
     }
     return true;
