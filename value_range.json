@@ -1,14 +1,1 @@
-{
-  "key with predefined values": "all possible values for this key, part_number: 1 per KB/length",
-  "package_mode": "delete",
-  "package_mode_": "create"
-  "package.packagetext_lang": "dr",
-  "package.packagetext_lang": "en",
-  "package.packagetext_lang": "fr",
-  "package.labour.unit_id": "A",
-  "package.labour_linenumber": "01",
-  "packege.part_format": "entry",
-  "package.part_number": "A  9424212112",
-  "package.part_number": "N910105018026",
-  "package.validity.componentshortserial_type": "A"
-}
+{"key with predefined values":"all possible values, Tnr: nur KB und Laenge","package":"","package mode":"delete;create","package.labour linenumber":"01;02;03;04;05;06;07;08;09;10;11;12;13","package.labour.unit id":"A","package.packagetext lang":"de;fr;en","package.part format":"entry","package.part number":"N13;A13;Q8;Q9;Q18;B9;N15","package.validity.componentlongserial type":"E","package.validity.componentshortserial type":"A;C;E;T;M1;M4"}

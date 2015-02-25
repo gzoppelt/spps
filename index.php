@@ -1,14 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head lang="de">
+    <meta charset="utf-8">
+    <title>SPPS XML Syntax</title>
+</head>
+<body>
 <?php
-$fXml = "./packets/test02.xml";  //SPPS_20150104.xml"; //
+$fXml = "./packets/SPPS_20150104.xml"; // "./packets/test02.xml"; //
 $hXml = fopen($fXml, "r");
-class paket {
-
-}
 
 $c = "";
 $lineCount = 0;
-$k = json_decode(file_get_contents('key_range.json'), true);
-$v = json_decode(file_get_contents('value_range.json'), true);
+$syntaxCheck = true;
+$paketAufbau = false;
+
+try {
+    $key_range = json_decode(file_get_contents('./key_range.json'), true);
+} catch(Exception $e) {
+    echo $e->getMessage();
+    $key_range = [];
+    $key_range['package'] = '';
+}
+try {
+    $value_range = json_decode(file_get_contents('./value_range.json'), true);
+} catch(Exception $e) {
+    echo $e->getMessage();
+    $value_range = [];
+}
+$key_new = [];
+$value_new = [];
 
 while ( $c .= trim(fgets($hXml)) ) {
     $lineCount++;
@@ -30,12 +50,9 @@ while ( $c .= trim(fgets($hXml)) ) {
         $x = substr($c, 0, $i+1)."</packages>";
         //end tag added because it is supposed to be at the end of a very large file
         $c = substr($c, $i+1);
-        echo("<br> x: ".untag($x));
-        echo("<br> c.legth: ".strlen($c));
-        echo("<br> c: ".untag($c));
         $packages = simplexml_load_string($x);
         foreach($packages->attributes() as $a => $b){
-            echo "<br>", $a, " = ", $b;
+            //echo "<br>", $a, " = ", $b;
         }
         $timestamp = $packages['timestamp'];
         $origin = $packages['origin'];
@@ -50,9 +67,6 @@ while ( $c .= trim(fgets($hXml)) ) {
         $i = strpos($c, "</package>");
         $x = substr($c, 0, $i) . "</package>";
         $c = substr($c, $i + 10);
-        echo("<br> x: " . untag($x));
-        echo("<br> c.legth: " . strlen($c));
-        echo("<br> c: " . untag($c));
         try {
             $package = simplexml_load_string($x);
         } catch (Exception $e) {
@@ -63,10 +77,34 @@ while ( $c .= trim(fgets($hXml)) ) {
 
         $p = [];
         recursePackage($package);
-        echo "<br>";
-        print("<pre>".print_r($p, true)."</pre>");
-        echo "<br>";
 
+        if ($syntaxCheck) {
+            foreach( $p as $entry ) {
+                //trennen won Schlüssel $ex[0] und Wert $ex[1]
+                $ex = explode('=', $entry);
+                if ( !array_key_exists($ex[0], $key_range) ) {
+                    // wenn der Schlüssel zu erstan mal vorkommt,
+                    // dann nehmen wir ihn in die Schlüsselliste auf
+                    $key_range[$ex[0]] = $ex[1];
+                    // und ebenso mit dem kompletten Beispielpaket in die Liste der neuen Schlüssel
+                    $key_new[$ex[0]] = $p;
+                }
+                // check value_range
+                if ( array_key_exists($ex[0], $value_range) ) {
+                    $possible_values = $value_range[$ex[0]];
+                    if ( $ex[0] == 'package.part number' ) {
+                        $check = substr($ex[1], 0, 1).strlen($ex[1]);
+                    } else {
+                        $check = $ex[1];
+                    }
+                    if ( strpos($possible_values, $check) === false ) {
+                        $value_range[$ex[0]]  .= ';'.$check;
+                        $value_new[$ex[0]] = $p;
+                    }
+                }
+            }
+        }
+        if ($paketAufbau) packetAubau($p);
     }
     if ( strpos($c, "</packages>") !== false) {
         // the last word was spoken
@@ -78,11 +116,55 @@ while ( $c .= trim(fgets($hXml)) ) {
     } else {
         echo "funny line: ". untag($c);
     }
-    if ( $lineCount == 200 ) break;
+    //if ( $lineCount == 200 ) break;
 }
 echo "<br> lineCount: ", $lineCount;
 fclose($hXml);
-echo "<br><b>OK</b>";
+echo "<br><b>OK</b><br><br>";
+
+if ( $syntaxCheck ) {
+    //key_new
+    ksort($key_new);
+    $json = json_encode($key_new);
+    try {
+        $rec = file_put_contents('./key_new.json', $json);
+    } catch (Exception $e) {
+        echo "<br>", $e->getMessage();
+    }
+    if ($rec > 2) print("<h2>Key New $rec</h2><pre>" . print_r($key_new, true) . "</pre>");
+
+    //key_range
+    ksort($key_range);
+    $json = json_encode($key_range);
+    try {
+        $rec = file_put_contents('./key_range.json', $json);
+    } catch (Exception $e) {
+        echo "<br>", $e->getMessage();
+    }
+    print("<h2>Key Range $rec</h2><pre>" . print_r($key_range, true) . "</pre>");
+
+    //value_new
+    ksort($value_new);
+    $json = json_encode($value_new);
+    try {
+        $rec = file_put_contents('./value_new.json', $json);
+    } catch (Exception $e) {
+        echo "<br>", $e->getMessage();
+    }
+    if ($rec > 2) print("<h2>Value New $rec</h2><pre>" . print_r($value_new, true) . "</pre>");
+
+    //value_range
+    ksort($value_range);
+    $json = json_encode($value_range);
+    try {
+        $rec = file_put_contents('./value_range.json', $json);
+    } catch (Exception $e) {
+        echo "<br>", $e->getMessage();
+    }
+    print("<h2>Value Range $rec</h2><pre>" . print_r($value_range, true) . "</pre>");
+}
+
+/*********   End of the story   *******************************************************************************/
 
 function untag($string) {
     $string = str_replace('<', '&lt;', $string);
@@ -90,27 +172,25 @@ function untag($string) {
     return $string;
 }
 
-function recursePackage($xml, $parent="package", $top_level=true) {
+function recursePackage($xml, $parent="package") {
     global $p;
-    if ($top_level) {
-        //cheating:
-        $s = "$parent=\n";
-        array_push($p, $s);
-        echo "<br>", $s;
-    }
     foreach ($xml->attributes() as $a => $b) {
-        $be = utf8_decode($b);
-        $s = $parent.'_'.$a.'='.$be."\n";
+        $s = $parent.' '.$a.'='.$b;
         array_push($p, $s);
-        echo "<br>", $s;
     }
     foreach ($xml as $key => $value) {
-        $v = utf8_decode((string)$value);
-        $k = (string)$key;
-        $s = $parent.'.'.$k.'='.$v."\n";
+        $v = (string) $value;
+        $k = (string) $key;
+        $s = $parent.'.'.$k.'='.$v;
         array_push($p, $s);
-        echo "<br>", $s;
-        recursePackage($value, $parent . "." . $key, false);
+        recursePackage($value, $parent . "." . $key);
     }
     return true;
 }
+
+function paketAufbau($p) {
+    //TODO Paket aufbauen
+}
+?>
+</body>
+</html>

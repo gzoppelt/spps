@@ -1,13 +1,1 @@
-{
-  "key": "sample value",
-  "package": "",
-  "package_mode": "create",
-  "package_number": "3422755039",
-  "package.validity": "",
-  "package.validity.vin_to": "999999",
-  "package.validity.vin_suppcode": "**",
-  "package.validity.vin_from": "000001",
-  "package.validity.vin_filter": "930016",
-  "package.validity.vin.salesName": "2046 2035 2036 2048 2040 2041 2031 2043 2032 2044",
-  "package.validity.vin.": "WDB"
-}
+{"key":"sample value","package":"","package mode":"create","package number":"3422755039","package.damagecode":"42101","package.labour":"","package.labour designgroup":"40","package.labour labournumber":"1690","package.labour linenumber":"01","package.labour quantity":"1","package.labour.unit":"","package.labour.unit id":"A","package.labour.unit rate":"13.0","package.packagetext":"Bremskl\u00f6tze u. -scheiben vorn ern. (an 1.Fzg.-Achse)","package.packagetext lang":"de","package.part":"","package.part es1":"26","package.part es2":"5002","package.part format":"entry","package.part number":"A  0064205220","package.part quantity":"1.0","package.validity":"","package.validity.componentlongserial":"","package.validity.componentlongserial filter":"90692*","package.validity.componentlongserial from":"0350165","package.validity.componentlongserial suppcode":"*","package.validity.componentlongserial to":"999999*","package.validity.componentlongserial type":"E","package.validity.componentshortserial":"","package.validity.componentshortserial filter":"739500","package.validity.componentshortserial from":"******","package.validity.componentshortserial suppcode":"**","package.validity.componentshortserial to":"******","package.validity.componentshortserial type":"A","package.validity.saarule":"+(4250402579\/4250402580)+(4250421216\/4250421217\/4250421258\/4250421268)+4250430453","package.validity.sarule":"+(BB4\/BB5)","package.validity.vin":"WDB","package.validity.vin filter":"930016","package.validity.vin from":"000001","package.validity.vin suppcode":"**","package.validity.vin to":"999999","package.validity.vin.salesName":"2046 2035 2036 2048 2040 2041 2031 2043 2032 2044","package.validity.vin.wmc":"WDB"}
